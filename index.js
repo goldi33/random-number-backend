@@ -1,19 +1,11 @@
-const express = require('express');
 const cors = require('cors');
 
-const app = express();
-app.use(cors());
+module.exports = async (req, res) => {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'GET');
 
-let randomNumber = Math.floor(Math.random() * 11);
-let timestamp = Math.floor(Date.now() / 1000);
+    let randomNumber = Math.floor(Math.random() * 11);
+    let timestamp = Math.floor(Date.now() / 1000);
 
-app.get('/random', (req, res) => {
-    let currentTime = Math.floor(Date.now() / 1000);
-    if (currentTime - timestamp >= 60) {
-        randomNumber = Math.floor(Math.random() * 11);
-        timestamp = currentTime;
-    }
     res.json({ number: randomNumber, timestamp });
-});
-
-module.exports = app; // Important for Vercel
+};
