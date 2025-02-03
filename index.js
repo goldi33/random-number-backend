@@ -1,3 +1,14 @@
+import RandomNumberGenerator from "../components/RandomNumberGenerator";
+
+export default function Home() {
+    return (
+        <div>
+            <RandomNumberGenerator />
+        </div>
+    );
+}
+
+
 const express = require('express');
 const cors = require('cors');
 
