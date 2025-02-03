@@ -1,25 +1,35 @@
-const express = require('express');
-const cors = require('cors');
+<script>
+    async function fetchNumber() {
+        try {
+            const response = await fetch('https://random-number-backend-rho.vercel.app/random');
+            if (!response.ok) throw new Error("Server error");
 
-const app = express();
-app.use(cors());
+            const data = await response.json();
+            if (!data.number || !data.timestamp) throw new Error("Invalid response data");
 
-let randomNumber = Math.floor(Math.random() * 11);
-let timestamp = Math.floor(Date.now() / 1000);
-
-function updateNumber() {
-    let currentTime = Math.floor(Date.now() / 1000);
-    if (currentTime - timestamp >= 60) {
-        randomNumber = Math.floor(Math.random() * 11);
-        timestamp = currentTime;
+            document.getElementById("number").textContent = data.number;
+            startCountdown(data.timestamp);
+        } catch (error) {
+            console.error("Error fetching number:", error);
+            document.getElementById("number").textContent = "Error!";
+        }
     }
-}
 
-app.get('/random', (req, res) => {
-    updateNumber();
-    res.json({ number: randomNumber, timestamp });
-});
+    function startCountdown(serverTimestamp) {
+        let currentTime = Math.floor(Date.now() / 1000);
+        let timeLeft = 60 - (currentTime - serverTimestamp);
+        if (timeLeft < 0) timeLeft = 60;
 
-app.listen(3000, () => console.log('Server running on port 3000'));
+        document.getElementById("countdown").textContent = timeLeft;
+        let countdownInterval = setInterval(() => {
+            timeLeft--;
+            document.getElementById("countdown").textContent = timeLeft;
+            if (timeLeft <= 0) {
+                clearInterval(countdownInterval);
+                fetchNumber();
+            }
+        }, 1000);
+    }
 
-module.exports = app; // Required for Vercel
+    fetchNumber();
+</script>
